@@ -1,0 +1,52 @@
+#Alternativ python program
+import filecmp
+import time
+import subprocess
+import os
+from datetime import datetime
+
+f1 = "oniontest.txt"
+f2 = "oniontmp.txt"
+
+def file_checker(file1, file2):
+	compare = filecmp.cmp(file1, file2)
+	if compare == False:
+		subprocess.run(["cp oniontest.txt oniontmp.txt"], shell=True, capture_output=True, text=True)
+		print_message()
+
+
+def print_message():
+	with open('oniontest.txt', 'r') as file:
+		for line in file:
+			pass
+		last_line = line
+		print("Last line is", last_line)
+
+		if "Received" in last_line:
+			path = (line.split(": "))[1]
+			path_no_newline = path.strip('\n')
+
+			now = datetime.now()
+			current_time = now.strftime("%H:%M:%S")
+
+			with open(path_no_newline, 'r') as newmsg:
+				print('\n --------------- \n')
+				print('Message recieved at:', current_time, '\n')
+				for newlines in newmsg:
+					print(newlines)
+				print('\n --------------- \n')
+
+
+def main():
+	print("WELCOME TO WHISTLEBLOWER")
+	id = os.fork()
+	if id > 0:
+		subprocess.run(["onionshare-cli --receive --disable-files --persistent persistentonion > oniontest.txt"], shell=True, capture_output=True, text=True)
+	
+		
+
+	input("continue?")
+	while(True):
+		file_checker(f1, f2)
+	
+main()
