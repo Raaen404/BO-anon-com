@@ -18,13 +18,11 @@ with open('onionshare.auth_private', 'r') as f:
 
 
 onion_share_addr = 'http://'+addr+'.onion/upload'
-#tor_proc = None
 
 
 #Teksteditor
 class TextEditor:
     def __init__(self, on_send):
-        print("Initializing TextEditor")
         self.on_send = on_send
         self.window = tk.Tk()
         self.window.title("Text Editor")
@@ -58,45 +56,24 @@ class TextEditor:
 #Håndteringen av meldinger
 class MessageHandler:
     def __init__(self, url):
-        print("Initializing MessageHandler")
         self.url = url
         self.last_message = None
         self.scheduler = MessageScheduler(self)
         self.is_scheduled_send = False
-        #self.start_tor()
         self.counter = 0
 
 
-    '''def start_tor(self):
-        global tor_proc
-        print("Starting Tor with custom torrc")
-        try:
-            tor_proc = subprocess.Popen(["tor","-f","/home/raaen/BO/sender/custom_torrc"],
-                                        stdout=subprocess.DEVNULL,
-                                        stderr=subprocess.DEVNULL,
-                                        start_new_session=True)
-        except Exception as e:
-            print(f"Something went wrong: {e} ")
-            if psutil.pid_exists(tor_proc.pid):
-                tor_proc.kill()'''
-
     def new_message(self):
-        print("new_message")
         self.is_scheduled_send = False
-        print("Is message scheduled", self.is_scheduled_send)
         editor = TextEditor(on_send=self.handle_send)
         editor.start_editor()
     
     def handle_send(self, text):
-        print("handle_send")
         self.last_message = text
         self.send_message_over_tor()
 
 
     def send_message_over_tor(self):
-        print("send_message_over_tor")
-        self.counter += 1
-        print("Amount of times trying to send: ", self.counter)
         try: 
             files = {
                 'text':(None, str(self.last_message))
@@ -130,12 +107,10 @@ class MessageHandler:
 
         finally:
             if not self.is_scheduled_send:
-                print("New Message is not scheduled for send. Scheduling message")
                 self.scheduler.schedule_next_send()
         time.sleep(5)
 
     def check_tor_connectivity(self):
-        print("check_tor_connectivity")
         counter = 0
 
         if counter < 5:
@@ -174,34 +149,27 @@ class MessageHandler:
 
 class MessageScheduler:
     def __init__(self, message_handler):
-        print("Initializing MessageScheduler")
         self.message_handler = message_handler
         self.scheduled_job = None
         self.start_scheduler()
         
     def start_scheduler(self):
-        print("Starting scheduler")
         self.thread = threading.Thread(target=self.run_continuously, daemon=True)
         self.thread.start()
 
     def schedule_next_send(self): 
-        print("schedule_next_send")
         self.message_handler.is_scheduled_send = True
         if self.scheduled_job is not None:
             schedule.cancel_job(self.scheduled_job)
-        print("Scheduling task!")
         self.scheduled_job = schedule.every(30).seconds.do(self.message_handler.send_message_over_tor)
-        print("Job successfully scheduled")
 
 
     def run_continuously(self):
         while True:
-            print("run_continuously")
             schedule.run_pending()
             time.sleep(1)
 
 def main() -> None:
-    #global tor_proc
     while True:
         with open('ascii-art-sender.txt', 'r') as f:
             print(''.join([line for line in f]))
@@ -218,8 +186,6 @@ def main() -> None:
                 msg.new_message()
             case "2":
                 print("\nExiting program...")
-                #if psutil.pid_exists(tor_proc.pid):
-                    #tor_proc.kill()
                 sys.exit()
             case _:
                 print("\nNot understood. Restarting...")
