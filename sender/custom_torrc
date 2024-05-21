@@ -34,9 +34,9 @@ SocksPort 9060 # Default: Bind to localhost:9050 for local connections.
 ## may provide sensitive information to an attacker who obtains the logs.
 ##
 ## Send all messages of level 'notice' or higher to /var/log/tor/notices.log
-Log notice file /home/raaen/notices.log
+Log notice file /home/notices.log
 ## Send every possible message to /var/log/tor/debug.log
-Log debug file /home/raaen/debug.log
+Log debug file /home/debug.log
 ## Use the system log instead of Tor's logfiles
 #Log notice syslog
 ## To send all messages to stderr:
@@ -190,5 +190,5 @@ HashedControlPassword 16:DE599450F7B4AF4860E2A590A499304F34E496B3991EF9A0929DC10
 ## address manually to your friends, uncomment this line:
 #PublishServerDescriptor 0
 
-ClientOnionAuthDir /home/raaen/BO/sender/
+ClientOnionAuthDir /home/sender/
 
