@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 #PATHS
-TORRC="/home/raaen/BO/sender/custom_torrc"
-PYTHON_SCRIPT="/home/raaen/BO/sender/sender_auto_test4.py"
+TORRC="/path/to/custom_torrc"
+PYTHON_SCRIPT="/path/to/sender_program"
 PORT=9061
 
 PID=$(lsof -i :${PORT} -t)
